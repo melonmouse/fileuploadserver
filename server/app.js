@@ -9,17 +9,21 @@ const app = express();
 const port = 3000;
 
 app.get('/', (req, res) => {
-  res.send(`
-    <form action="/api/upload" enctype="multipart/form-data" method="post">
-      <div>Text field title: <input type="text" name="title" /></div>
-      <div>File: <input type="file" name="someExpressFiles" multiple="multiple" /></div>
-      <input type="submit" value="Upload" />
-    </form>
-  `);
+  res.sendFile(__dirname + '/upload_module.html');
 });
 
 app.post('/api/upload', (req, res, next) => {
-  const form = formidable({ multiples: true });
+  const GIBI = 1024 * 1024 * 1024;
+  const date = new Date();
+  console.log(`${date.toISOString()}_drone_map.tiff`);
+
+  const form = formidable({
+    multiples: true,
+    uploadDir: __dirname + '/uploads',
+    filename: (_name, _ext, _part, _form) => `${date.toISOString()}_drone_map.tiff`,
+    maxFieldsSize: 5 * GIBI,
+    hashAlgorithm: 'SHA1',
+  });
 
   form.parse(req, (err, fields, files) => {
     if (err) {
