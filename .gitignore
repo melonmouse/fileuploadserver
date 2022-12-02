@@ -1,3 +1,4 @@
 *.swp
 server/node_modules
 server/uploads
+server-webpack/dist/uploads
