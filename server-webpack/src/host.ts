@@ -1,11 +1,13 @@
 import express from 'express';
 import formidable from 'formidable';
 import rateLimit from 'express-rate-limit';
-import argparse from 'argparse';
+import { ArgumentParser } from 'argparse';
 
-const parser = new argparse.ArgumentParser({});
+const parser: ArgumentParser = new ArgumentParser({
+  description: 'File Upload Server'
+});
 parser.add_argument('--port', {type: 'int', default: 8080});
-parser.add_argument('--ip', {type: 'string', default: 'localhost'});
+parser.add_argument('--ip', {type: String, default: 'localhost'});
 const argv = parser.parse_args();
 
 const uploadLimiter = rateLimit({

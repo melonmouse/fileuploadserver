@@ -19,11 +19,25 @@ cp src/*.html dist/
 mkdir -p dist/fileuploadserver
 cp src/fileuploadserver/*.html dist/fileuploadserver/
 
-PORT=$(( 1024 + RANDOM % 49152 ))
-echo "Opening port [${PORT}]..."
-ufw allow "${PORT}/tcp"
 echo "Running..."
-node dist/host.js --port "${PORT}" --ip "0.0.0.0"
+PORT=$(( 1024 + RANDOM % 49152 ))
+if which ufw &> /dev/null; then
+    echo "Opening port [${PORT}]..."
+    sudo ufw allow "${PORT}/tcp"
+    echo "====== Ports open for TCP ======"
+    sudo ufw status | grep "tcp"
+    echo "================================"
+    echo "Done! To close manually (after crash) run: #ufw delete allow "${PORT}/tcp""
+    IP="0.0.0.0"
+else
+    echo "ufw not installed, running on localhost."
+    IP="localhost"
+fi 
+
+echo "Starting node..."
+node dist/host.js --port "${PORT}" --ip "${IP}"
 echo "Node has exited."
-echo "Closing port [${PORT}]..."
-ufw delete allow "${PORT}/tcp"
+if which ufw &> /dev/null; then
+    echo "Closing port [${PORT}]..."
+    sudo ufw delete allow "${PORT}/tcp"
+fi
