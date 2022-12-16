@@ -12,7 +12,7 @@ const uploadLimiter = rateLimit({
   // NOTE: can set a custom requestWasSuccessful function.
   // NOTE: can whitelist specific IPs like this:
   //   skip: (request, response) => ['192.168.0.0'].includes(request.ip),
-})
+});
 
 const app:express.Application = express();
 
