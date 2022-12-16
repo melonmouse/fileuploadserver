@@ -1,6 +1,12 @@
 import express from 'express';
 import formidable from 'formidable';
 import rateLimit from 'express-rate-limit';
+import argparse from 'argparse';
+
+const parser = new argparse.ArgumentParser({});
+parser.add_argument('--port', {type: 'int', default: 8080});
+parser.add_argument('--ip', {type: 'string', default: 'localhost'});
+const argv = parser.parse_args();
 
 const uploadLimiter = rateLimit({
   windowMs: 10 * 60 * 1000, // 10 minutes
@@ -16,16 +22,6 @@ const uploadLimiter = rateLimit({
 
 const app:express.Application = express();
 
-const randomRange = (min: number, max: number):number => {
-  console.assert(min < max, 'min must be less than max');
-  console.assert(!Number.isNaN(min) && !Number.isNaN(max),
-    'min and max must be numbers');
-  return min + Math.floor(Math.random() * (max - min));
-};
-
-// Select random open port in [1024, 49152[.
-const PORT = randomRange(1024, 49152);
-
 const dirname = () => {
   return process.cwd() + '/dist';
 };
@@ -34,8 +30,8 @@ app.get('/', (req:any, res:any) => {
   res.sendFile(dirname() + '/fileuploadserver/upload_module.html');
 });
 
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`Server listening on http://0.0.0.0:${PORT}...`);
+app.listen(argv.port, argv.ip, () => {
+  console.log(`Server listening on http://${argv.ip}:${argv.port}...`);
 });
 
 app.post('/api/upload', uploadLimiter, (req:any, res:any, next:any) => {

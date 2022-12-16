@@ -19,5 +19,11 @@ cp src/*.html dist/
 mkdir -p dist/fileuploadserver
 cp src/fileuploadserver/*.html dist/fileuploadserver/
 
+PORT=$(( 1024 + RANDOM % 49152 ))
+echo "Opening port [${PORT}]..."
+ufw allow "${PORT}/tcp"
 echo "Running..."
-node dist/host.js
+node dist/host.js --port "${PORT}" --ip "0.0.0.0"
+echo "Node has exited."
+echo "Closing port [${PORT}]..."
+ufw delete allow "${PORT}/tcp"
