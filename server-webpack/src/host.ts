@@ -46,6 +46,7 @@ app.post('/api/upload', uploadLimiter, (req:any, res:any, next:any) => {
     uploadDir: dirname() + '/uploads',
     filename: (_name:any, _ext:any, _part:any, _form:any) => `${date.toISOString()}_drone_map.tiff`,
     maxFieldsSize: 5 * GIBI,
+    maxFileSize: 5 * GIBI,
     hashAlgorithm: 'SHA1',
   });
 
