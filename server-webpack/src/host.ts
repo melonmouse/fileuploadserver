@@ -1,3 +1,4 @@
+import path from 'path';
 import express from 'express';
 import formidable from 'formidable';
 import rateLimit from 'express-rate-limit';
@@ -43,11 +44,21 @@ class UploadStatus {
 const app:express.Application = express();
 
 const dirname = () => {
-  return process.cwd() + '/dist';
+  return path.join(process.cwd(), 'dist');
 };
 
+//app.use((req:any, res:any, next:any) => {
+//  res.setHeader(
+//    'Content-Security-Policy',
+//    "media-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline';"
+//  );
+//  next();
+//});
+
+app.use('/static', express.static(path.join(dirname(),'fileuploadserver')));
+
 app.get('/', (req:any, res:any) => {
-  res.sendFile(dirname() + '/fileuploadserver/upload_module.html');
+  res.sendFile(path.join(dirname(), 'fileuploadserver/upload_module.html'));
 });
 
 app.listen(argv.port, argv.ip, () => {
@@ -61,7 +72,7 @@ app.post('/api/upload', uploadLimiter, (req:any, res:any, next:any) => {
 
   const form = formidable({
     multiples: true,
-    uploadDir: dirname() + '/uploads',
+    uploadDir: path.join(dirname(), 'uploads'),
     filename: (_name:any, _ext:any, _part:any, _form:any) => filename,
     maxFileSize: 5 * GIBI,
     hashAlgorithm: 'SHA1',
