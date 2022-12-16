@@ -22,6 +22,24 @@ const uploadLimiter = rateLimit({
   //   skip: (request, response) => ['192.168.0.0'].includes(request.ip),
 });
 
+class UploadStatus {
+  lastReceivedInUnit = NaN;
+  
+  printProgress = (bytesReceived:number, bytesExpected:number):void => {
+    const units = ['bytes', 'KB', 'MB', 'GB', 'TB', 'PB'];
+    const unitIndex = Math.floor(Math.log10(bytesExpected) / 3);
+    const unitName = units[unitIndex];
+    const unitSize = Math.pow(1000, unitIndex);
+    const receivedInUnit = Math.round(bytesReceived / unitSize * 10) / 10;
+    if (isNaN(this.lastReceivedInUnit) ||
+      receivedInUnit > this.lastReceivedInUnit) {
+      this.lastReceivedInUnit = receivedInUnit;
+      const expectedInUnit = Math.round(bytesExpected / unitSize * 10) / 10;
+      console.log(`Progress: ${receivedInUnit} / ${expectedInUnit} ${unitName}`);
+    }
+  }
+}
+
 const app:express.Application = express();
 
 const dirname = () => {
@@ -39,16 +57,27 @@ app.listen(argv.port, argv.ip, () => {
 app.post('/api/upload', uploadLimiter, (req:any, res:any, next:any) => {
   const GIBI = 1024 * 1024 * 1024;
   const date = new Date();
-  console.log(`${date.toISOString()}_drone_map.tiff`);
+  const filename = `${date.toISOString()}_drone_map.tiff`;
 
   const form = formidable({
     multiples: true,
     uploadDir: dirname() + '/uploads',
-    filename: (_name:any, _ext:any, _part:any, _form:any) => `${date.toISOString()}_drone_map.tiff`,
-    maxFieldsSize: 5 * GIBI,
+    filename: (_name:any, _ext:any, _part:any, _form:any) => filename,
     maxFileSize: 5 * GIBI,
     hashAlgorithm: 'SHA1',
   });
+
+  const uploadStatus = new UploadStatus();
+  form.on('field', (name, value) => console.log(
+    `Received field: [${name}]=[${value}].`));
+  form.on('fileBegin', (formName, file) => console.log(
+    `Starting upload: [${file.originalFilename}]=>[${file.newFilename}].`));
+  form.on('progress', uploadStatus.printProgress);
+  form.on('error', (err) => console.log(
+    `Upload error: httpCode=[${err.httpCode}] code=[${err.code}], message=[${err.message}]`));
+  form.on('aborted', () => console.log(
+    'Upload aborted: timeout or close event on socket.'));
+  form.on('end', () => console.log('Uploads complete.'));
 
   form.parse(req, (err:any, fields:any, files:any) => {
     if (err) {

@@ -20,8 +20,8 @@ mkdir -p dist/fileuploadserver
 cp src/fileuploadserver/*.html dist/fileuploadserver/
 
 echo "Running..."
-PORT=$(( 1024 + RANDOM % 49152 ))
 if which ufw &> /dev/null; then
+    PORT=$(( 1024 + RANDOM % 49152 ))
     echo "Opening port [${PORT}]..."
     sudo ufw allow "${PORT}/tcp"
     echo "====== Ports open for TCP ======"
@@ -31,6 +31,7 @@ if which ufw &> /dev/null; then
     IP="0.0.0.0"
 else
     echo "ufw not installed, running on localhost."
+    PORT="3000"
     IP="localhost"
 fi 
 
