@@ -12,6 +12,6 @@
   "allowSyntheticDefaultImports": true
 },
 "files": [
-  "./src/host.ts",
+  "./src/host.ts"
 ]
 }

@@ -18,6 +18,7 @@ tsc
 cp src/*.html dist/
 mkdir -p dist/fileuploadserver
 cp src/fileuploadserver/*.html dist/fileuploadserver/
+cp src/fileuploadserver/*.js dist/fileuploadserver/
 
 echo "Running..."
 if which ufw &> /dev/null; then

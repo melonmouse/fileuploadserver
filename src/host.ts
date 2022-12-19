@@ -48,9 +48,10 @@ const dirname = () => {
 };
 
 //app.use((req:any, res:any, next:any) => {
+//  const policy = '\'self\' \'unsafe-inline\'';
 //  res.setHeader(
 //    'Content-Security-Policy',
-//    "media-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline';"
+//    `media-src ${policy}; script-src ${policy};`
 //  );
 //  next();
 //});
