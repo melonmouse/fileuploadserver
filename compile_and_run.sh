@@ -17,6 +17,7 @@ echo "Compiling..."
 tsc
 cp src/*.html dist/
 mkdir -p dist/fileuploadserver
+mkdir -p dist/uploads
 cp src/fileuploadserver/*.html dist/fileuploadserver/
 cp src/fileuploadserver/*.js dist/fileuploadserver/
 
