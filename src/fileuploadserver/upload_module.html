@@ -1,15 +1,21 @@
 <!DOCTYPE html>
 <html>
 <head>
-<script type="module" src="./static/bundle.js"></script>
+<meta charset='utf-8'>
+<script type='module' src='./static/bundle.js'></script>
+<link rel='stylesheet' href='./static/upload_module.css'/>
 </head>
 
 <body>
-<form action="/api/upload" enctype="multipart/form-data" method="post" id="uploadForm">
-    <div>File: <input type="file" name="someExpressFiles"/></div>
-    <input type="submit" value="Upload" />
+<form action='/api/upload' enctype='multipart/form-data' method='post' id='uploadForm'>
+    <div>File: <input type='file' name='someExpressFiles'/></div>
+    <input type='submit' value='Upload' />
 </form>
-<div id="uploadStatus">NONE</div>
-<div id="uploadProgress">? / ?</div>
+
+<div class='uploadProgress' id='myProgress'>
+  <span class='uploadProgressText'>50 / 100mb</span>
+  <div class='uploadProgressBar' style='width:40%;'></div>
+</div>
+
 </body>
 </html>

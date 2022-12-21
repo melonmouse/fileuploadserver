@@ -26,6 +26,7 @@ mkdir -p dist/fileuploadserver
 mkdir -p dist/uploads
 mkdir -p dist/common
 cp src/fileuploadserver/*.html dist/fileuploadserver/
+cp src/fileuploadserver/*.css dist/fileuploadserver/
 cp src/common/*.js dist/common
 echo "Compiling... (server)"
 tsc

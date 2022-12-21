@@ -38,16 +38,20 @@ export const submitUploadForm = (event: SubmitEvent):void => {
 };
 
 const reportProgress = (uploadStatus: Common.UploadStatus, e: ProgressEvent): void => {
+  let percentage = 0;
   if (e.lengthComputable) {
     uploadStatus.printProgressIfChanged(e.loaded, e.total);
+    percentage = e.loaded / e.total * 100;
   }
   const message = e.lengthComputable ?
     `${uploadStatus.getProgressString(e.loaded, e.total)} uploaded` : 'Upload started';
-  setUploadProgress(message);
+  setUploadProgress(message, percentage);
 };
 
-const setUploadProgress = (message: string): void => {
-  (document.getElementById('uploadProgress') as HTMLElement).innerText = message;
+const setUploadProgress = (message: string, percentage: number): void => {
+  const progressElement = document.getElementById('myProgress') as HTMLElement;
+  (progressElement.getElementsByClassName('uploadProgressText')[0] as HTMLElement).innerText = message;
+  (progressElement.getElementsByClassName('uploadProgressBar')[0] as HTMLElement).style.width = `${percentage}%`;
 };
 
 const setUploadStatus = (message: string): void => {
