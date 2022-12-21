@@ -12,6 +12,7 @@ export const submitUploadForm = (event: SubmitEvent):void => {
   xhr.upload.onerror = () => setUploadStatus('Upload error (try again)');
   xhr.upload.onabort = () => setUploadStatus('Upload abort');
   xhr.upload.ontimeout = () => setUploadStatus('Upload timeout (try again)');
+  xhr.upload.onloadend = () => console.log('xhr.upload.onloadend was called');
 
   xhr.onreadystatechange = () => {
     if (xhr.readyState === XMLHttpRequest.DONE) {
@@ -21,6 +22,8 @@ export const submitUploadForm = (event: SubmitEvent):void => {
         setUploadStatus(`Upload error [${xhr.status}]: ${xhr.responseText}`);
       }
     }
+    console.log(`xhr.readyState=[${xhr.readyState}] xhr.status=[${xhr.status}]`);
+    console.log(`xhr.responseText=[${xhr.responseText}]`);
   };
 
   xhr.send(new FormData(formElement));
