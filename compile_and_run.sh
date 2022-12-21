@@ -15,8 +15,10 @@ npx eslint src/fileuploadserver/*.ts
 echo "Linting... (server)"
 npx eslint src/*.ts
 
-echo "Compiling... (client)"
-(cd src/fileuploadserver && npm run build)
+#echo "Compiling... (client RELEASE MODE)"
+#(cd src/fileuploadserver && npm run build)
+echo "Compiling... (client DEBUG MODE)"
+(cd src/fileuploadserver && npm run debug)
 
 echo "Compiling... (copying files)"
 cp src/*.html dist/
