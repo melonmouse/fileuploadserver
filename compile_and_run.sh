@@ -9,9 +9,11 @@ if which shellcheck > /dev/null; then
     shellcheck compile_and_run.sh
 fi
 
-echo "Linting..."
+echo "Linting... (client)"
+npx eslint src/fileuploadserver/*.ts
+
+echo "Linting... (server)"
 npx eslint src/*.ts
-#npx eslint src/fileuploadserver/*.ts
 
 echo "Compiling... (client)"
 (cd src/fileuploadserver && npm run build)
