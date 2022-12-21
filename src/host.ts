@@ -7,6 +7,13 @@ import { ArgumentParser } from 'argparse';
 import * as Common from './common/common.js';
 import IncomingForm from 'formidable/Formidable.js';
 
+// TODO disambiguate logs (for when multiple uploads happen at once)
+// TODO test with slow connections on chrome
+// TODO test with safari
+// TODO test on mobile (ios, android)
+// TODO test on older browsers
+// TODO fix that firefox fails when connection is briefly lost
+
 const parser: ArgumentParser = new ArgumentParser({
   description: 'File Upload Server'
 });
@@ -56,7 +63,6 @@ app.listen(argv.port, argv.ip, () => {
 });
 
 app.post('/api/upload', uploadLimiter, (req:Request, res:Response, next:NextFunction) => {
-  const GIBI = 1024 * 1024 * 1024;
   const date = new Date();
   const filename = `${date.toISOString()}_drone_map.tiff`;
 
@@ -64,10 +70,10 @@ app.post('/api/upload', uploadLimiter, (req:Request, res:Response, next:NextFunc
     multiples: true,
     uploadDir: path.join(dirname(), 'uploads'),
     filename: (_name:string, _ext:string, _part:formidable.Part, _form:IncomingForm) => filename,
-    maxFileSize: 5 * GIBI,
+    maxFileSize: Common.maxFileSize,
     hashAlgorithm: 'SHA1',
   });
-
+  
   const uploadStatus = new Common.UploadStatus();
   form.on('field', (name, value) => console.log(
     `Received field: [${name}]=[${value}].`));

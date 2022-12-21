@@ -1,5 +1,8 @@
 // Utilities that are shared between client and server.
 
+const GIGA = 1024 * 1024 * 1024;
+export const maxFileSize = 5 * 1.01 * GIGA;  // 5 GiB + 1% for overhead
+
 export class UploadStatus {
   lastReceivedInUnit = NaN;
   lastProgressString = '';
