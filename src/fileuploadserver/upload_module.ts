@@ -9,27 +9,17 @@ export const submitUploadForm = (event: SubmitEvent):void => {
   xhr.open(formElement.method, formElement.action);// True for async which is default
   const uploadStatus = new Common.UploadStatus();
   xhr.upload.onprogress = (e) => reportProgress(uploadStatus, e);
-  xhr.upload.onloadstart = () => setUploadStatus('Upload started');
-  //xhr.upload.onloadend = () => setUploadStatus('Upload ended');
-  xhr.upload.onerror = () => setUploadStatus('Upload error');
+  xhr.upload.onerror = () => setUploadStatus('Upload error (try again)');
   xhr.upload.onabort = () => setUploadStatus('Upload abort');
-  xhr.upload.ontimeout = () => setUploadStatus('Upload timeout');
+  xhr.upload.ontimeout = () => setUploadStatus('Upload timeout (try again)');
 
   xhr.onreadystatechange = () => {
-    // NOTE: may be redundant?
     if (xhr.readyState === XMLHttpRequest.DONE) {
-      // The other values are: OPENED, HEADERS_RECEIVED, LOADING
-      const uploadStatusDiv = document.getElementById('uploadStatus') as HTMLElement;
       if (xhr.status === 200) {
-        console.log('Upload complete');
-        uploadStatusDiv.innerHTML = 'Upload complete';
+        setUploadStatus('Upload successful!');
       } else {
-        console.log('Upload error');
-        uploadStatusDiv.innerHTML = 'Upload error';
+        setUploadStatus(`Upload error [${xhr.status}]: ${xhr.responseText}`);
       }
-    } else {
-      console.log('readyState:' + xhr.readyState);
-      console.log('Status:' + xhr.status);
     }
   };
 
@@ -48,14 +38,31 @@ const reportProgress = (uploadStatus: Common.UploadStatus, e: ProgressEvent): vo
   setUploadProgress(message, percentage);
 };
 
+const progressElement = document.getElementById('myProgress') as HTMLElement;
+const textElements = progressElement.getElementsByClassName('uploadProgressText');
+console.assert(textElements.length == 1);
+const textElement = textElements[0] as HTMLElement;
+const barElements = progressElement.getElementsByClassName('uploadProgressBar');
+console.assert(barElements.length == 1);
+const barElement = barElements[0] as HTMLElement;
+
+let lastPercentage = 0;
+
 const setUploadProgress = (message: string, percentage: number): void => {
-  const progressElement = document.getElementById('myProgress') as HTMLElement;
-  (progressElement.getElementsByClassName('uploadProgressText')[0] as HTMLElement).innerText = message;
-  (progressElement.getElementsByClassName('uploadProgressBar')[0] as HTMLElement).style.width = `${percentage}%`;
+  const nIncrements = 1000;
+  console.assert(percentage >= 0 && percentage <= 100);
+  console.assert(percentage >= lastPercentage);
+  if (percentage - lastPercentage < 100 / nIncrements) {
+    return;
+  }
+  textElement.innerText = message;
+  barElement.style.width = `${percentage}%`;
+  progressElement.style.visibility = 'visible';
+  lastPercentage = percentage;
 };
 
 const setUploadStatus = (message: string): void => {
-  (document.getElementById('uploadStatus') as HTMLElement).innerText = message;
+  textElement.innerText = message;
 };
 
 const formElement = document.getElementById('uploadForm') as HTMLFormElement;

@@ -16,11 +16,15 @@ const argv = parser.parse_args();
 
 const uploadLimiter = rateLimit({
   windowMs: 10 * 60 * 1000, // 10 minutes
-  max: 3,
-  skipSuccessfulRequests: true,  // allow at most 3 failed requests per 10 minutes.
+  max: 10,
+  skipSuccessfulRequests: true,  // allow at most 10 failed requests per 10 minutes.
   standardHeaders: false,
   legacyHeaders: false,
   message: 'Too many failed uploads, please try again in 10 minutes.',
+  handler: (request, response, next, options) => {
+    response.status(options.statusCode).send(options.message);
+    console.log(`Upload rate limit exceeded for ip=[${request.ip}]!`);
+  },
   // NOTE: can set a custom requestWasSuccessful function.
   // NOTE: can whitelist specific IPs like this:
   //   skip: (request, response) => ['192.168.0.0'].includes(request.ip),
