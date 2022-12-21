@@ -31,6 +31,7 @@ const uploadLimiter = rateLimit({
   handler: (request, response, next, options) => {
     response.status(options.statusCode).send(options.message);
     console.log(`Upload rate limit exceeded for ip=[${request.ip}]!`);
+    // NOTE: make sure to not log the IP adress longer term.
   },
   // NOTE: can set a custom requestWasSuccessful function.
   // NOTE: can whitelist specific IPs like this:
@@ -65,6 +66,14 @@ app.listen(argv.port, argv.ip, () => {
 app.post('/api/upload', uploadLimiter, (req:Request, res:Response, next:NextFunction) => {
   const date = new Date();
   const filename = `${date.toISOString()}_drone_map.tiff`;
+  const hexIdLength = 4;
+  const randomHexString = Math.floor(Math.random() * 16 ** hexIdLength).toString(16).padStart(hexIdLength, '0');
+  const uploadId = `${req.ip} ${randomHexString}`;
+
+  const printToConsole = (message: string):void => {
+    const currentTime = new Date().toISOString().substring(5);
+    console.log(`\x1b[34m${currentTime} | ${uploadId} | \x1b[0m${message}`);
+  };
 
   const form = formidable({
     multiples: true,
@@ -75,16 +84,16 @@ app.post('/api/upload', uploadLimiter, (req:Request, res:Response, next:NextFunc
   });
   
   const uploadStatus = new Common.UploadStatus();
-  form.on('field', (name, value) => console.log(
+  form.on('field', (name, value) => printToConsole(
     `Received field: [${name}]=[${value}].`));
-  form.on('fileBegin', (formName, file) => console.log(
+  form.on('fileBegin', (formName, file) => printToConsole(
     `Starting upload: [${file.originalFilename}]=>[${file.newFilename}].`));
-  form.on('progress', uploadStatus.printProgressIfChanged);
-  form.on('error', (err) => console.log(
+  form.on('progress', (bytesReceived, bytesTotal) => uploadStatus.printProgressIfChanged(bytesReceived, bytesTotal, printToConsole));
+  form.on('error', (err) => printToConsole(
     `Upload error: httpCode=[${err.httpCode}] code=[${err.code}], message=[${err.message}]`));
-  form.on('aborted', () => console.log(
+  form.on('aborted', () => printToConsole(
     'Upload aborted: timeout or close event on socket.'));
-  form.on('end', () => console.log('Uploads complete.'));
+  form.on('end', () => printToConsole('Uploads complete.'));
 
   form.parse(req, (err, fields:formidable.Fields, files:formidable.Files) => {
     if (err) {

@@ -25,11 +25,11 @@ export class UploadStatus {
     return this.lastProgressString;
   }
 
-  printProgressIfChanged = (bytesReceived, bytesExpected) => {
+  printProgressIfChanged = (bytesReceived, bytesExpected, logFunction=null) => {
     const oldProgressString = this.lastProgressString;
     const progressString = this.getProgressString(bytesReceived, bytesExpected);
     if (oldProgressString != progressString) {
-      console.log(progressString);
+      (logFunction ?? console.log)(progressString);
     }
   }
 }
