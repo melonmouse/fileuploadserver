@@ -9,9 +9,13 @@
   "target": "es2020",
   "allowJs": true,
   "moduleResolution": "node",
+  "baseUrl": ".",
   "allowSyntheticDefaultImports": true
 },
+"include": [
+  "./src/common/*"
+],
 "files": [
-  "./src/host.ts"
+  "./src/host.ts",
 ]
 }

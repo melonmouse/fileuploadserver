@@ -4,6 +4,8 @@ import formidable from 'formidable';
 import rateLimit from 'express-rate-limit';
 import { ArgumentParser } from 'argparse';
 
+import * as Common from './common/common.js';
+
 const parser: ArgumentParser = new ArgumentParser({
   description: 'File Upload Server'
 });
@@ -22,24 +24,6 @@ const uploadLimiter = rateLimit({
   // NOTE: can whitelist specific IPs like this:
   //   skip: (request, response) => ['192.168.0.0'].includes(request.ip),
 });
-
-class UploadStatus {
-  lastReceivedInUnit = NaN;
-  
-  printProgress = (bytesReceived:number, bytesExpected:number):void => {
-    const units = ['bytes', 'KB', 'MB', 'GB', 'TB', 'PB'];
-    const unitIndex = Math.floor(Math.log10(bytesExpected) / 3);
-    const unitName = units[unitIndex];
-    const unitSize = Math.pow(1000, unitIndex);
-    const receivedInUnit = Math.round(bytesReceived / unitSize * 10) / 10;
-    if (isNaN(this.lastReceivedInUnit) ||
-      receivedInUnit > this.lastReceivedInUnit) {
-      this.lastReceivedInUnit = receivedInUnit;
-      const expectedInUnit = Math.round(bytesExpected / unitSize * 10) / 10;
-      console.log(`Progress: ${receivedInUnit} / ${expectedInUnit} ${unitName}`);
-    }
-  }
-}
 
 const app:express.Application = express();
 
@@ -79,7 +63,7 @@ app.post('/api/upload', uploadLimiter, (req:any, res:any, next:any) => {
     hashAlgorithm: 'SHA1',
   });
 
-  const uploadStatus = new UploadStatus();
+  const uploadStatus = new Common.UploadStatus();
   form.on('field', (name, value) => console.log(
     `Received field: [${name}]=[${value}].`));
   form.on('fileBegin', (formName, file) => console.log(

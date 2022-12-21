@@ -13,13 +13,18 @@ echo "Linting..."
 npx eslint src/*.ts
 #npx eslint src/fileuploadserver/*.ts
 
-echo "Compiling..."
-tsc
+echo "Compiling... (client)"
+(cd src/fileuploadserver && npm run build)
+
+echo "Compiling... (copying files)"
 cp src/*.html dist/
 mkdir -p dist/fileuploadserver
 mkdir -p dist/uploads
+mkdir -p dist/common
 cp src/fileuploadserver/*.html dist/fileuploadserver/
-cp src/fileuploadserver/*.js dist/fileuploadserver/
+cp src/common/*.js dist/common
+echo "Compiling... (server)"
+tsc
 
 echo "Running..."
 if which ufw &> /dev/null; then
