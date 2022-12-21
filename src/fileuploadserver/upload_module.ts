@@ -2,16 +2,15 @@ import * as Common from '../common/common.js';
 
 console.log('Upload module loaded');
 
-export const myUpload = (event: any):void => {
-  console.log('myUpload called');
-  console.assert(event != null && event != undefined);
+export const submitUploadForm = (event: SubmitEvent):void => {
+  console.log('Submitting upload form.');
   const xhr = new XMLHttpRequest();
   const formElement = document.getElementById('uploadForm') as HTMLFormElement;
   xhr.open(formElement.method, formElement.action);// True for async which is default
   const uploadStatus = new Common.UploadStatus();
   xhr.upload.onprogress = (e) => reportProgress(uploadStatus, e);
   xhr.upload.onloadstart = () => setUploadStatus('Upload started');
-  xhr.upload.onloadend = () => setUploadStatus('Upload done');
+  //xhr.upload.onloadend = () => setUploadStatus('Upload ended');
   xhr.upload.onerror = () => setUploadStatus('Upload error');
   xhr.upload.onabort = () => setUploadStatus('Upload abort');
   xhr.upload.ontimeout = () => setUploadStatus('Upload timeout');
@@ -38,7 +37,7 @@ export const myUpload = (event: any):void => {
   event.preventDefault();
 };
 
-const reportProgress = (uploadStatus: Common.UploadStatus, e: any): void => {
+const reportProgress = (uploadStatus: Common.UploadStatus, e: ProgressEvent): void => {
   if (e.lengthComputable) {
     uploadStatus.printProgressIfChanged(e.loaded, e.total);
   }
@@ -47,19 +46,19 @@ const reportProgress = (uploadStatus: Common.UploadStatus, e: any): void => {
   setUploadProgress(message);
 };
 
-const setUploadProgress = (s: any): void => {
-  (document.getElementById('uploadProgress') as HTMLElement).innerText = s;
+const setUploadProgress = (message: string): void => {
+  (document.getElementById('uploadProgress') as HTMLElement).innerText = message;
 };
 
-const setUploadStatus = (s: any): void => {
-  (document.getElementById('uploadStatus') as HTMLElement).innerText = s;
+const setUploadStatus = (message: string): void => {
+  (document.getElementById('uploadStatus') as HTMLElement).innerText = message;
 };
 
 const formElement = document.getElementById('uploadForm') as HTMLFormElement;
-formElement.addEventListener('submit', (event) => myUpload(event));
+formElement.addEventListener('submit', (event) => submitUploadForm(event));
 
 declare global {
   interface Window { upload_module: Record<string, unknown>; }
 }
 window.upload_module = {};
-window.upload_module.myUpload = myUpload;
+window.upload_module.myUpload = submitUploadForm;

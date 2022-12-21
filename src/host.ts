@@ -1,10 +1,11 @@
 import path from 'path';
-import express from 'express';
+import express, { NextFunction, Request, Response } from 'express';
 import formidable from 'formidable';
 import rateLimit from 'express-rate-limit';
 import { ArgumentParser } from 'argparse';
 
 import * as Common from './common/common.js';
+import IncomingForm from 'formidable/Formidable.js';
 
 const parser: ArgumentParser = new ArgumentParser({
   description: 'File Upload Server'
@@ -42,7 +43,7 @@ const dirname = () => {
 
 app.use('/static', express.static(path.join(dirname(),'fileuploadserver')));
 
-app.get('/', (req:any, res:any) => {
+app.get('/', (req:Request, res:Response) => {
   res.sendFile(path.join(dirname(), 'fileuploadserver/upload_module.html'));
 });
 
@@ -50,7 +51,7 @@ app.listen(argv.port, argv.ip, () => {
   console.log(`Server listening on http://${argv.ip}:${argv.port}...`);
 });
 
-app.post('/api/upload', uploadLimiter, (req:any, res:any, next:any) => {
+app.post('/api/upload', uploadLimiter, (req:Request, res:Response, next:NextFunction) => {
   const GIBI = 1024 * 1024 * 1024;
   const date = new Date();
   const filename = `${date.toISOString()}_drone_map.tiff`;
@@ -58,7 +59,7 @@ app.post('/api/upload', uploadLimiter, (req:any, res:any, next:any) => {
   const form = formidable({
     multiples: true,
     uploadDir: path.join(dirname(), 'uploads'),
-    filename: (_name:any, _ext:any, _part:any, _form:any) => filename,
+    filename: (_name:string, _ext:string, _part:formidable.Part, _form:IncomingForm) => filename,
     maxFileSize: 5 * GIBI,
     hashAlgorithm: 'SHA1',
   });
@@ -75,7 +76,7 @@ app.post('/api/upload', uploadLimiter, (req:any, res:any, next:any) => {
     'Upload aborted: timeout or close event on socket.'));
   form.on('end', () => console.log('Uploads complete.'));
 
-  form.parse(req, (err:any, fields:any, files:any) => {
+  form.parse(req, (err, fields:formidable.Fields, files:formidable.Files) => {
     if (err) {
       next(err);
       return;
