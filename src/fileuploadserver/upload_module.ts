@@ -1,7 +1,9 @@
 import * as Common from '../common/common.js';
 
 console.log('Upload module loaded');
+
 export const myUpload = (event: any):void => {
+  console.log('myUpload called');
   console.assert(event != null && event != undefined);
   const xhr = new XMLHttpRequest();
   const formElement = document.getElementById('uploadForm') as HTMLFormElement;
@@ -40,13 +42,19 @@ const reportProgress = (uploadStatus: any, e: any): void => {
   const message = e.lengthComputable ?
     `${uploadStatus.getProgressString(e.loaded, e.total)} uploaded` : 'Upload started';
   console.log(message);
-  setUploadStatus(message);
+  setUploadProgress(message);
+};
+
+const setUploadProgress = (s: any): void => {
+  (document.getElementById('uploadProgress') as HTMLElement).innerText = s;
 };
 
 const setUploadStatus = (s: any): void => {
   (document.getElementById('uploadStatus') as HTMLElement).innerText = s;
 };
 
+const formElement = document.getElementById('uploadForm') as HTMLFormElement;
+formElement.addEventListener('submit', (event) => myUpload(event));
 
 declare global {
   interface Window { upload_module: Record<string, unknown>; }

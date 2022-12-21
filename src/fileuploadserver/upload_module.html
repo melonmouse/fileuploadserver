@@ -5,10 +5,11 @@
 </head>
 
 <body>
-<form action="/api/upload" enctype="multipart/form-data" method="post" onsubmit="window.upload_module.myUpload(this)" id="uploadForm">
+<form action="/api/upload" enctype="multipart/form-data" method="post" id="uploadForm">
     <div>File: <input type="file" name="someExpressFiles"/></div>
     <input type="submit" value="Upload" />
 </form>
 <div id="uploadStatus">NONE</div>
+<div id="uploadProgress">? / ?</div>
 </body>
 </html>
