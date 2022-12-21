@@ -68,7 +68,7 @@ app.post('/api/upload', uploadLimiter, (req:any, res:any, next:any) => {
     `Received field: [${name}]=[${value}].`));
   form.on('fileBegin', (formName, file) => console.log(
     `Starting upload: [${file.originalFilename}]=>[${file.newFilename}].`));
-  form.on('progress', uploadStatus.printProgress);
+  form.on('progress', uploadStatus.printProgressIfChanged);
   form.on('error', (err) => console.log(
     `Upload error: httpCode=[${err.httpCode}] code=[${err.code}], message=[${err.message}]`));
   form.on('aborted', () => console.log(

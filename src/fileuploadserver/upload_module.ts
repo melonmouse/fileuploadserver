@@ -38,10 +38,12 @@ export const myUpload = (event: any):void => {
   event.preventDefault();
 };
 
-const reportProgress = (uploadStatus: any, e: any): void => {
+const reportProgress = (uploadStatus: Common.UploadStatus, e: any): void => {
+  if (e.lengthComputable) {
+    uploadStatus.printProgressIfChanged(e.loaded, e.total);
+  }
   const message = e.lengthComputable ?
     `${uploadStatus.getProgressString(e.loaded, e.total)} uploaded` : 'Upload started';
-  console.log(message);
   setUploadProgress(message);
 };
 

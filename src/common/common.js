@@ -2,8 +2,11 @@
 
 export class UploadStatus {
   lastReceivedInUnit = NaN;
+  lastProgressString = '';
   
   getProgressString = (bytesReceived, bytesExpected) => {
+    console.assert(typeof bytesReceived == 'number');
+    console.assert(typeof bytesExpected == 'number');
     const units = ['bytes', 'KB', 'MB', 'GB', 'TB', 'PB'];
     const unitIndex = Math.floor(Math.log10(bytesExpected) / 3);
     const unitName = units[unitIndex];
@@ -13,14 +16,16 @@ export class UploadStatus {
       receivedInUnit > this.lastReceivedInUnit) {
       this.lastReceivedInUnit = receivedInUnit;
       const expectedInUnit = Math.round(bytesExpected / unitSize * 10) / 10;
-      return `${receivedInUnit} / ${expectedInUnit} ${unitName}`;
+      this.lastProgressString =
+        `${receivedInUnit.toFixed(1)} / ${expectedInUnit.toFixed(1)} ${unitName}`;
     }
-    return '';
+    return this.lastProgressString;
   }
 
-  printProgress = (bytesReceived, bytesExpected) => {
+  printProgressIfChanged = (bytesReceived, bytesExpected) => {
+    const oldProgressString = this.lastProgressString;
     const progressString = this.getProgressString(bytesReceived, bytesExpected);
-    if (progressString.length > 0) {
+    if (oldProgressString != progressString) {
       console.log(progressString);
     }
   }
