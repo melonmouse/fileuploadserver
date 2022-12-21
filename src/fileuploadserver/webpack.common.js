@@ -26,5 +26,6 @@ module.exports = {
     filename: 'bundle.js',
     path: path.resolve(__dirname, '../../dist', 'fileuploadserver'),
     clean: true,
+    //library: 'upload_module',// This should result in a global variable named 'window.upload_module', but it doesn't.
   },
 };

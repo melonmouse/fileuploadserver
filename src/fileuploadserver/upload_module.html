@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-<script src="static/bundle.js"></script>
+<script type="module" src="./static/bundle.js"></script>
 </head>
 
 <body>
-<form action="/api/upload" enctype="multipart/form-data" method="post" onsubmit="myUpload" id="xid">
+<form action="/api/upload" enctype="multipart/form-data" method="post" onsubmit="window.upload_module.myUpload" id="xid">
     <div>File: <input type="file" name="someExpressFiles"/></div>
     <input type="submit" value="Upload" />
 </form>

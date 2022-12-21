@@ -1,5 +1,6 @@
 import * as Common from '../common/common.js';
 
+console.log('Upload module loaded');
 export const myUpload = (event: any) => {
     var xhr = new XMLHttpRequest();
     const formElement = document.getElementById('uploadForm') as HTMLFormElement;
@@ -44,3 +45,10 @@ const reportProgress = (uploadStatus: any, e: any): void => {
 const setUploadStatus = (s: any): void => {
     document.getElementById('uploadStatus')!.innerText = s;
 };
+
+
+declare global {
+    interface Window { upload_module: Record<string, unknown>; }
+}
+window.upload_module = {};
+window.upload_module.myUpload = myUpload;
