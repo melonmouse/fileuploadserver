@@ -20,7 +20,7 @@ module.exports = {
     extensions: ['.tsx', '.ts', '.js'],
   },
   output: {
-    filename: 'bundle.js',
+    filename: 'upload_module.js',
     path: path.resolve(__dirname, '../../dist', 'fileuploadserver'),
     clean: true,
     //library: 'upload_module',// This should result in a global variable named 'window.upload_module', but it doesn't.
