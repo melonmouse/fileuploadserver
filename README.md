@@ -1,21 +1,31 @@
 # FileUploadServer
 
 Fileuploadserver (working title) is an Express middleware file uploading module,
-developed by Abe for the 9-de online.
+developed by Abe for the 9-de online. I've gone slightly over budget - spent 48 hours developing this.
 
-This middleware can be found in the `module` folder. In `example_project` you
+## Project layout
+
+This fileuploadserver middleware can be found in the `module` folder. In `example_project` you
 can find an example Express app using FileUploadServer. For your own project, it
 is recommended to clone this whole repository, and compile against it form a
 folder outside of the fileuploadserver.
+
+`module/client` contains the frontend code, which can be injected into your own frontend. The typescript code is bundled/minimized using webpack, and includes the injection logic.
+
+`module/host` contains the typescript backend code. It can be included in a minimal independent server (like `example_project`), or as middleware in an existing Express server.
+
+`module/common` contains a few functions that are shared between the frontend and backend in javascript.
+
+Each of the buildable projects (`module/client`, `module/host` and `example_project`) includes scripts to build and run. The compiled results are put into their relative `dist` folders.
+
+## First time setup
 
 To set things up the first time:
 1. run `install.sh`
 1. when it crashes, you may have missing dependencies (`tsc`, ...)
 1. read and then run `compile_and_run_example.sh` if it looks good
 
-I've gone slightly over budget - spent 48 hours developing this.
-
-Features:
+## Features
 - modular design for easy integration with Express apps
 - handles and communicates most failure modes with the user
 - easily extendable if more features are needed in the future
@@ -31,7 +41,7 @@ Features:
 - user inputs are sanitized
 - has "only a few" dependencies (a few hundred is not a lot for the node world)
 
-Non-features:
+## Non-features
 - not extensively battle tested
   - not tested on old browser versions
   - not tested on old server (linux) versions
