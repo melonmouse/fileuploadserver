@@ -1,9 +1,6 @@
 import * as Common from '../../common/src/common.js';
 import { Utils } from './utils';
 
-// TODO add tests
-// TODO reconnect and continue on connection lost
-
 export class Uploader {
   formElement:HTMLFormElement;
 

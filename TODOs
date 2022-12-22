@@ -1,21 +1,22 @@
 TODO
-- detect + report when the upload is stuck
 - detect duplicate uploads
-
-- test + make code modular / easy to integrate in node express app (middleware)
-
 - add support for uploading several files at once from a single client
-- improve status messages shown to user
+- continue failed uploads
+
 - add time estimation
 
 - test on mobile (android, ios), on safari etc
 - test with outdated browsers
 - make directory structure nicer (client and server configs in seperate folders)
 - attempt to make the common file typescript (again)
+- add (unit) tests
 
 DONE:
 - add simple visual representation of upload progress
 - test new version on server
 - disambiguate logs (for when multiple uploads happen at once)
 - test slow uploads on chrome / firefox
+- test + make code modular / easy to integrate in node express app (middleware)
+- detect + report when the upload is stuck
+- improve status messages shown to user
 
