@@ -7,17 +7,17 @@
 </head>
 
 <body>
-<div id='uploadWidget'>
-    <form action='/api/upload' enctype='multipart/form-data' method='post' id='uploadForm'>
+<div class='uploadWidget' id='myUploadForm'>
+    <form action='/api/upload' enctype='multipart/form-data' method='post' class='uploadForm'>
         <b>Upload File...</b>
         <br/>
         <div><input type='file' name='someExpressFiles'/></div>
         <input type='submit' value='Upload'/>
     </form>
 
-    <div class='uploadProgress' id='myProgress' style='visibility: hidden;'>
-    <span class='uploadProgressText'>Starting upload...</span>
-    <div class='uploadProgressBar' style='width:0%;'></div>
+    <div class='uploadProgress' style='visibility: hidden;'>
+        <span class='uploadProgressText'>Starting upload...</span>
+        <div class='uploadProgressBar' style='width:0%;'></div>
     </div>
 </div>
 

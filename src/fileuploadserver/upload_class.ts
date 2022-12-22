@@ -1,6 +1,13 @@
 import * as Common from '../common/common.js';
+import { Utils } from './utils';
+
+// TODO check + report if connection is silently lost
+// TODO add connection indicator (e.g. circle that rotates when uploading)
+// TODO add tests
 
 export class Uploader {
+  formElement:HTMLFormElement;
+
   progressElement:HTMLElement;
   textElement:HTMLElement;
   barElement:HTMLElement;
@@ -9,17 +16,13 @@ export class Uploader {
   uploadStatus = new Common.UploadStatus();
   xhr:XMLHttpRequest|null = null;
 
-  constructor(progressElementId:string) {
-    this.progressElement =
-      document.getElementById(progressElementId) as HTMLElement;
-    const textElements =
-      this.progressElement.getElementsByClassName('uploadProgressText');
-    console.assert(textElements.length == 1);
-    this.textElement = textElements[0] as HTMLElement;
-    const barElements =
-      this.progressElement.getElementsByClassName('uploadProgressBar');
-    console.assert(barElements.length == 1);
-    this.barElement = barElements[0] as HTMLElement;
+  constructor(formElement:HTMLFormElement, progressElement:HTMLElement) {
+    this.formElement = formElement;
+    this.progressElement = progressElement;
+    this.textElement =
+      Utils.getUniqueChildByClassName(this.progressElement, 'uploadProgressText');
+    this.barElement =
+      Utils.getUniqueChildByClassName(this.progressElement, 'uploadProgressBar');
   }
 
   SubmitUpload = (event: SubmitEvent):void => {
@@ -27,13 +30,14 @@ export class Uploader {
     this.progressElement.style.visibility = 'visible';
     console.log('Submitting upload form.');
     this.xhr = new XMLHttpRequest();
-    const formElement = document.getElementById('uploadForm') as HTMLFormElement;
-    this.xhr.open(formElement.method, formElement.action);
+    this.xhr.open(this.formElement.method, this.formElement.action);
     this.xhr.upload.onprogress = (e) => this.reportProgress(e);
     this.xhr.upload.onerror = () => this.setUploadStatus('Upload error');
     this.xhr.upload.onabort = () => this.setUploadStatus('Upload abort');
-    this.xhr.upload.ontimeout = () => this.setUploadStatus('Upload timeout (try again)');
-    this.xhr.upload.onloadend = () => console.log('xhr.upload.onloadend was called');
+    this.xhr.upload.ontimeout =
+      () => this.setUploadStatus('Upload timeout (try again)');
+    this.xhr.upload.onloadend =
+      () => console.log('xhr.upload.onloadend was called');
 
     this.xhr.onreadystatechange = () => {
       console.assert(this.xhr != null);
@@ -42,14 +46,16 @@ export class Uploader {
         if (this.xhr.status === 200) {
           this.setUploadStatus('Upload successful!');
         } else {
-          this.setUploadStatus(`Upload error [${this.xhr.status}]: ${this.xhr.responseText}`);
+          this.setUploadStatus(
+            `Upload error [${this.xhr.status}]: ${this.xhr.responseText}`);
         }
       }
-      console.log(`xhr.readyState=[${this.xhr.readyState}] xhr.status=[${this.xhr.status}]`);
+      console.log(
+        `xhr.readyState=[${this.xhr.readyState}] xhr.status=[${this.xhr.status}]`);
       console.log(`xhr.responseText=[${this.xhr.responseText}]`);
     };
 
-    this.xhr.send(new FormData(formElement));
+    this.xhr.send(new FormData(this.formElement));
     event.preventDefault();
   }
 
@@ -66,16 +72,20 @@ export class Uploader {
         return;
       }
     }
-    const message = e.lengthComputable ?
-      `${this.uploadStatus.getProgressString(e.loaded, e.total)} uploaded` : 'Upload started';
+    let message = 'Upload started';
+    if (e.lengthComputable) {
+      message =
+        `${this.uploadStatus.getProgressString(e.loaded, e.total)} uploaded`;
+    }
     this.setUploadProgress(message, percentage);
   };
 
   setUploadProgress = (message: string, percentage: number): void => {
-    const nIncrements = 1000;  // Limit the number of updates to improve performance.
+    const nIncrements = 1000;  
     console.assert(percentage >= 0 && percentage <= 100);
     console.assert(percentage >= this.lastPercentage);
     if (percentage - this.lastPercentage < 100 / nIncrements) {
+      // Updates the progress bar at most nIncrements times (for better performance).
       return;
     }
     this.textElement.innerText = message;

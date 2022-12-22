@@ -1,20 +1,30 @@
 import { Uploader } from './upload_class';
+import { Utils } from './utils';
 
-console.log('Upload module loaded');
+const createUploadForm = (uploadModuleElementId:string): void => {
+  const uploadModuleElement =
+    document.getElementById(uploadModuleElementId) as HTMLElement;
+  const formElement = Utils.getUniqueChildByClassName(
+    uploadModuleElement, 'uploadForm') as HTMLFormElement;
+  const progressElement =
+    Utils.getUniqueChildByClassName(uploadModuleElement, 'uploadProgress');
 
-// TODO check + report if connection is silently lost
-// TODO add connection indicator (e.g. circle that rotates when uploading)
-// TODO add tests
+  const uploader = new Uploader(formElement, progressElement);
 
-export const submitUploadForm = (event: SubmitEvent):void => {
-  new Uploader('myProgress').SubmitUpload(event);
+  const submitUploadForm = (event: SubmitEvent): void => {
+    uploader.SubmitUpload(event);
+  };
+
+  formElement.addEventListener('submit', submitUploadForm);
+
+  // Expose uploaders to the global scope for debugging.
+  console.log(`Upload form [${uploadModuleElementId}] loaded.`);
+  window.uploadModule[uploadModuleElementId] = submitUploadForm;
 };
 
-const formElement = document.getElementById('uploadForm') as HTMLFormElement;
-formElement.addEventListener('submit', (event) => submitUploadForm(event));
-
 declare global {
-  interface Window { upload_module: Record<string, unknown>; }
+  interface Window { uploadModule: Record<string, unknown>; }
 }
-window.upload_module = {};
-window.upload_module.myUpload = submitUploadForm;
+window.uploadModule = {};
+
+createUploadForm('myUploadForm');
