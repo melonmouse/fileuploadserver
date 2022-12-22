@@ -29,6 +29,9 @@ export class Uploader {
   }
 
   submitUpload = (event: SubmitEvent): void => {
+    if (this.hasUpload) {
+      this._stopUpload('Aborting previous upload.', 2);
+    }
     console.assert(!this.hasUpload);
     
     this.uploadStatus = new Common.UploadStatus();
