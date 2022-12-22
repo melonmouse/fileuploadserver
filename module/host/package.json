@@ -21,6 +21,7 @@
     "argparse": "^2.0.1",
     "express": "^4.18.2",
     "express-rate-limit": "^6.7.0",
-    "formidable": "^2.1.1"
+    "formidable": "^2.1.1",
+    "sanitize-filename": "^1.6.3"
   }
 }
