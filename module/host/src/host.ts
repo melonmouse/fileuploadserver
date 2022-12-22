@@ -4,7 +4,7 @@ import formidable from 'formidable';
 import rateLimit from 'express-rate-limit';
 import { ArgumentParser } from 'argparse';
 
-import * as Common from './common/common.js';
+import * as Common from '../../common/src/common.js';
 import IncomingForm from 'formidable/Formidable.js';
 
 const parser: ArgumentParser = new ArgumentParser({
@@ -34,13 +34,15 @@ const uploadLimiter = rateLimit({
 const app:express.Application = express();
 
 const dirname = () => {
-  return path.join(process.cwd(), 'dist');
+  return process.cwd();
 };
 
-app.use('/static', express.static(path.join(dirname(),'fileuploadserver')));
+app.use('/static', express.static(path.join(dirname(), 'client/dist')));
+// TODO check this path
 
 app.get('/', (req:Request, res:Response) => {
-  res.sendFile(path.join(dirname(), 'fileuploadserver/client.html'));
+  res.sendFile(path.join(dirname(), 'client/dist/client.html'));
+  // TODO move
 });
 
 app.listen(argv.port, argv.ip, () => {

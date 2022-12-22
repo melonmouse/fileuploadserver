@@ -1,6 +1,6 @@
 {
 "compilerOptions": {
-  "outDir": "./dist/",
+  "outDir": "./dist",
   "module": "es2020",
   "noImplicitAny": true,
   "removeComments": true,
@@ -13,9 +13,9 @@
   "allowSyntheticDefaultImports": true
 },
 "include": [
-  "./src/common/*"
+  "../common/src/*"
 ],
 "files": [
-  "./src/host.ts",
+  "src/host.ts",
 ]
 }

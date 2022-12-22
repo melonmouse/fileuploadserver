@@ -7,7 +7,7 @@ export class Utils {
     console.assert(elements.length < 2,
       `Child with classname=[${className}] is not unique.}`);
     return elements[0] as HTMLElement;
-  }
+  };
 
   static loadHtml = (url: string, element: HTMLElement): Promise<void> => {
     return new Promise((resolve, reject) => {
@@ -24,5 +24,5 @@ export class Utils {
       };
       xhr.send();
     });
-  }
+  };
 }

@@ -1,0 +1,21 @@
+{
+"compilerOptions": {
+  "outDir": "./dist",
+  "module": "es2020",
+  "noImplicitAny": true,
+  "removeComments": true,
+  "preserveConstEnums": true,
+  "sourceMap": true,
+  "target": "es2020",
+  "allowJs": true,
+  "moduleResolution": "node",
+  "baseUrl": ".",
+  "allowSyntheticDefaultImports": true
+},
+"include": [
+  "../common/src/*"
+],
+"files": [
+  "src/upload_module.ts",
+]
+}

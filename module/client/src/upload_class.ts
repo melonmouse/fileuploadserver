@@ -1,4 +1,4 @@
-import * as Common from '../common/common.js';
+import * as Common from '../../common/src/common.js';
 import { Utils } from './utils';
 
 // TODO check + report if connection is silently lost
@@ -25,7 +25,7 @@ export class Uploader {
       Utils.getUniqueChildByClassName(this.progressElement, 'uploadProgressBar');
   }
 
-  SubmitUpload = (event: SubmitEvent):void => {
+  SubmitUpload = (event: SubmitEvent): void => {
     this.lastPercentage = 0;
     this.progressElement.style.visibility = 'visible';
     console.log('Submitting upload form.');
@@ -57,7 +57,7 @@ export class Uploader {
 
     this.xhr.send(new FormData(this.formElement));
     event.preventDefault();
-  }
+  };
 
   reportProgress = (e: ProgressEvent): void => {
     console.assert(this.xhr != null);

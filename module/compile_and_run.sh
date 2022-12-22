@@ -9,27 +9,12 @@ if which shellcheck > /dev/null; then
     shellcheck compile_and_run.sh
 fi
 
-echo "Linting... (client)"
-npx eslint src/fileuploadserver/*.ts
+echo "Building..."
+(cd client && ./compile_client.sh)
+(cd host && ./compile_host.sh)
 
-echo "Linting... (server)"
-npx eslint src/*.ts
-
-#echo "Compiling... (client RELEASE MODE)"
-#(cd src/fileuploadserver && npm run build)
-echo "Compiling... (client DEBUG MODE)"
-(cd src/fileuploadserver && npm run debug)
-
-echo "Compiling... (copying files)"
-cp src/*.html dist/
-mkdir -p dist/fileuploadserver
-mkdir -p dist/uploads
-mkdir -p dist/common
-cp src/fileuploadserver/*.html dist/fileuploadserver/
-cp src/fileuploadserver/*.css dist/fileuploadserver/
-cp src/common/*.js dist/common
-echo "Compiling... (server)"
-tsc
+echo "Creating upload folder..."
+mkdir -p uploads
 
 echo "Running..."
 if which ufw &> /dev/null; then
@@ -48,7 +33,7 @@ else
 fi 
 
 echo "Starting node..."
-node dist/host.js --port "${PORT}" --ip "${IP}"
+node host/dist/host/src/host.js --port "${PORT}" --ip "${IP}"
 echo "Node has exited."
 if which ufw &> /dev/null; then
     echo "Closing port [${PORT}]..."

@@ -2,7 +2,7 @@ const path = require('path');
 const copyPlugin = require('copy-webpack-plugin');
 
 module.exports = {
-  entry: './upload_module.ts',
+  entry: './src/upload_module.ts',
   module: {
     rules: [
       {
@@ -19,10 +19,18 @@ module.exports = {
   resolve: {
     extensions: ['.tsx', '.ts', '.js'],
   },
+  plugins: [
+    new copyPlugin({
+      patterns: [
+        {from: './src/upload_module.css', to: '[name][ext]'},
+        {from: './src/upload_module.html', to: '[name][ext]'},
+        {from: './src/client.html', to: '[name][ext]'},//TODO move this out
+      ],
+    }),
+  ],
   output: {
     filename: 'upload_module.js',
-    path: path.resolve(__dirname, '../../dist', 'fileuploadserver'),
+    path: path.resolve(__dirname, './dist'),
     clean: true,
-    //library: 'upload_module',// This should result in a global variable named 'window.upload_module', but it doesn't.
   },
 };

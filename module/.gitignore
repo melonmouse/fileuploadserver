@@ -1,4 +1,9 @@
-node_modules/*
+host/node_modules/*
+client/node_modules/*
+host/dist/*
+client/dist/*
 dist/*
+uploads/*
 video_source/*
 *.swp
+*.bak
