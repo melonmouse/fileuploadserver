@@ -7,13 +7,6 @@ import { ArgumentParser } from 'argparse';
 import * as Common from './common/common.js';
 import IncomingForm from 'formidable/Formidable.js';
 
-// TODO disambiguate logs (for when multiple uploads happen at once)
-// TODO test with slow connections on chrome
-// TODO test with safari
-// TODO test on mobile (ios, android)
-// TODO test on older browsers
-// TODO fix that firefox fails when connection is briefly lost
-
 const parser: ArgumentParser = new ArgumentParser({
   description: 'File Upload Server'
 });
@@ -23,8 +16,8 @@ const argv = parser.parse_args();
 
 const uploadLimiter = rateLimit({
   windowMs: 10 * 60 * 1000, // 10 minutes
-  max: 10,
-  skipSuccessfulRequests: true,  // allow at most 10 failed requests per 10 minutes.
+  max: 10,  // allow at most 10 failed requests per 10 minutes per client.
+  skipSuccessfulRequests: true,
   standardHeaders: false,
   legacyHeaders: false,
   message: 'Too many failed uploads, please try again in 10 minutes.',
@@ -43,15 +36,6 @@ const app:express.Application = express();
 const dirname = () => {
   return path.join(process.cwd(), 'dist');
 };
-
-//app.use((req:any, res:any, next:any) => {
-//  const policy = '\'self\' \'unsafe-inline\'';
-//  res.setHeader(
-//    'Content-Security-Policy',
-//    `media-src ${policy}; script-src ${policy};`
-//  );
-//  next();
-//});
 
 app.use('/static', express.static(path.join(dirname(),'fileuploadserver')));
 
