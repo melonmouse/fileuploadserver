@@ -1,3 +1,5 @@
+import path from 'path';
+import sanitize from 'sanitize-filename';
 import { NextFunction, Request, Response } from 'express';
 import formidable from 'formidable';
 
@@ -13,20 +15,28 @@ export class FileUploadModule {
  
   doUpload = (req: Request, res: Response, next: NextFunction) => {
     const date = new Date();
-    const filename = `${date.toISOString()}_drone_map.tiff`;
     const hexIdLength = 4;
     const randomHexString = Math.floor(Math.random() * 16 ** hexIdLength).toString(16).padStart(hexIdLength, '0');
-    const uploadId = `${req.ip} ${randomHexString}`;
+    const uploadId = `${req.ip}_${randomHexString}`;
+    const filenamePrefix = `${date.toISOString()}_${randomHexString}`;
 
     const printToConsole = (message: string):void => {
       const currentTime = new Date().toISOString().substring(5);
       console.log(`\x1b[34m${currentTime} | ${uploadId} | \x1b[0m${message}`);
     };
 
+    const generateFilename = (_name: string, _ext: string, part: formidable.Part,
+      _form: IncomingForm): string => {
+      const originalPath = part.originalFilename;
+      const originalFilename = sanitize(path.basename(originalPath));
+      const newFilename = `${filenamePrefix}_${originalFilename}.upload`;
+      return sanitize(newFilename);
+    };
+
     const form = formidable({
       multiples: true,
       uploadDir: this.uploadDir,
-      filename: (_name:string, _ext:string, _part:formidable.Part, _form:IncomingForm) => filename,
+      filename: generateFilename,
       maxFileSize: Common.maxFileSize,
       hashAlgorithm: 'SHA1',
     });

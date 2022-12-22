@@ -2,6 +2,7 @@ import path from 'path';
 import express, { Request, Response } from 'express';
 import { ArgumentParser } from 'argparse';
 import rateLimit from 'express-rate-limit';
+// TODO: flatten the module build folder structure to simpify the import path XD.
 import { FileUploadModule } from '../../module/host/dist/host/src/fileUploadModule.js'; 
 
 const parser: ArgumentParser = new ArgumentParser({
@@ -23,9 +24,11 @@ const uploadLimiter = rateLimit({
   handler: (request, response, next, options) => {
     response.status(options.statusCode).send(options.message);
     console.log(`Upload rate limit exceeded for ip=[${request.ip}]!`);
-    // NOTE: make sure to not log the IP adress longer term.
+    // NOTE: make sure there is user consent for storing IP adresses and/or
+    // sufficiently limit the storage time of logs containing IP adresses.
   },
-  // NOTE: can set a custom requestWasSuccessful function.
+  // NOTE: can set a custom requestWasSuccessful function: e.g. check the file
+  // type and size.
   // NOTE: can whitelist specific IPs like this:
   //   skip: (request, response) => ['192.168.0.0'].includes(request.ip),
 });

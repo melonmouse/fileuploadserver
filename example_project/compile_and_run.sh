@@ -4,9 +4,8 @@ set -e
 
 if which shellcheck > /dev/null; then
     # This bash script lints itself if shellcheck is installed
-    shellcheck compile_and_run_example.sh
+    shellcheck compile_and_run.sh
 fi
-echo "Please make sure to compile the fileuploadserver module."
 
 echo "Linting... (example_project)"
 npx eslint src/*.ts
