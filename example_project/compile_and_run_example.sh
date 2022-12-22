@@ -1,17 +1,18 @@
 #!/usr/bin/bash
 
-# TODO: switch to https://github.com/microsoft/TypeScript-Node-Starter
-
 set -e
 
 if which shellcheck > /dev/null; then
     # This bash script lints itself if shellcheck is installed
-    shellcheck compile_and_run.sh
+    shellcheck compile_and_run_example.sh
 fi
+echo "Please make sure to compile the fileuploadserver module."
 
-echo "Building..."
-(cd client && ./compile_client.sh)
-(cd host && ./compile_host.sh)
+echo "Linting... (example_project)"
+npx eslint src/*.ts
+
+echo "Compiling... (example_project)"
+tsc
 
 echo "Creating upload folder..."
 mkdir -p uploads
@@ -33,7 +34,7 @@ else
 fi 
 
 echo "Starting node..."
-node host/dist/host/src/host.js --port "${PORT}" --ip "${IP}"
+node dist/example_project/src/host.js --port "${PORT}" --ip "${IP}"
 echo "Node has exited."
 if which ufw &> /dev/null; then
     echo "Closing port [${PORT}]..."

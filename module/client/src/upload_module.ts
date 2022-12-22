@@ -3,7 +3,7 @@ import { Utils } from './utils';
 
 const createUploadForm = async (uploadModuleElement:HTMLElement): Promise<void> => {
   console.log(`Fetching upload form [${uploadModuleElement.id}].`);
-  await Utils.loadHtml('./static/upload_module.html', uploadModuleElement);
+  await Utils.loadHtml('./fileuploadclient-static/upload_module.html', uploadModuleElement);
   const formElement = Utils.getUniqueChildByClassName(
     uploadModuleElement, 'uploadForm') as HTMLFormElement;
   const progressElement =

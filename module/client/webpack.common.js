@@ -24,7 +24,6 @@ module.exports = {
       patterns: [
         {from: './src/upload_module.css', to: '[name][ext]'},
         {from: './src/upload_module.html', to: '[name][ext]'},
-        {from: './src/client.html', to: '[name][ext]'},//TODO move this out
       ],
     }),
   ],

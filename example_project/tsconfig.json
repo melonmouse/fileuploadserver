@@ -13,9 +13,9 @@
   "allowSyntheticDefaultImports": true
 },
 "include": [
-  "../common/src/*"
+  "../module/host/dist/common/src/*"
 ],
 "files": [
-  "src/fileUploadModule.ts"
+  "src/host.ts"
 ]
 }
