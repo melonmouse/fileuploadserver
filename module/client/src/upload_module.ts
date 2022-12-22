@@ -12,7 +12,7 @@ const createUploadForm = async (uploadModuleElement:HTMLElement): Promise<void> 
   const uploader = new Uploader(formElement, progressElement);
 
   const submitUploadForm = (event: SubmitEvent): void => {
-    uploader.SubmitUpload(event);
+    uploader.submitUpload(event);
   };
 
   formElement.addEventListener('submit', submitUploadForm);
