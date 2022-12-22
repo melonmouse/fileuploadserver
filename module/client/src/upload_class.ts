@@ -98,8 +98,11 @@ export class Uploader {
       if (this.xhr.status === 200) {
         this._stopUpload('Upload successful!', 2);
       } else {
-        this._stopUpload(
-          `Upload error [${this.xhr.status}]: ${this.xhr.responseText}`, 1);
+        let message = `Upload error [${ this.xhr.status }]`;
+        if (this.xhr.responseText.length > 0) {
+          message += `: [${this.xhr.responseText}]`
+        }
+        this._stopUpload(message, 1);
       }
     }
     console.log(

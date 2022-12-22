@@ -54,10 +54,12 @@ export class FileUploadModule {
     form.on('end', () => printToConsole('Uploads complete.'));
 
     form.parse(req, (err, fields:formidable.Fields, files:formidable.Files) => {
+      printToConsole(`Parsing form.`);
       if (err) {
-        next(err);
+        printToConsole(`An error occured: [${err}]`);
         return;
       }
+      printToConsole(`Returning json.`);
       res.json({ fields, files });
     });
   };
