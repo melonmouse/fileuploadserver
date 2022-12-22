@@ -13,4 +13,6 @@ ls ../module/host/dist > /dev/null && rm -r ../module/host/dist
 
 echo "Deleting node install folders"
 ls ../module/client/node_modules > /dev/null && rm -r ../module/client/node_modules
-ls ../module/client/node_modules > /dev/null && rm -r ../module/host/node_modules
+ls ../module/host/node_modules > /dev/null && rm -r ../module/host/node_modules
+
+exit 0

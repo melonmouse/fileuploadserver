@@ -10,3 +10,5 @@ fi
 echo "Building..."
 (cd client && ./compile_client.sh)
 (cd host && ./compile_host.sh)
+
+exit 0

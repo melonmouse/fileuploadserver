@@ -28,3 +28,5 @@ find uploads/* | wc -l
 echo ""
 
 echo "Please manualy delete uploads if needed."
+
+exit 0
