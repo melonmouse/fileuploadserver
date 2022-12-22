@@ -4,25 +4,14 @@
   "description": "",
   "private": true,
   "type": "module",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "webpack serve --open --config webpack.dev.js",
-    "debug": "webpack --config webpack.dev.js",
-    "build": "webpack --config webpack.prod.js"
-  },
   "author": "",
   "license": "SEE LICENSE IN LICENSE FILE",
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.47.0",
-    "copy-webpack-plugin": "^8.1.1",
     "eslint": "^8.30.0",
     "ts-loader": "^8.1.0",
     "typescript": "^4.2.4",
-    "typescript-eslint": "*",
-    "webpack": "^5.75.0",
-    "webpack-cli": "^4.6.0",
-    "webpack-dev-server": "^4.9.3",
-    "webpack-merge": "^5.7.3"
+    "typescript-eslint": "*"
   },
   "dependencies": {
     "@types/argparse": "^2.0.10",
