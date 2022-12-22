@@ -18,6 +18,7 @@ export class Uploader {
   connectionCheckTimer: NodeJS.Timer;
 
   hasUpload = false;
+  currentErrorMessagePriority:number;
 
   uploadStatus = new Common.UploadStatus();
   xhr:XMLHttpRequest|null = null;
@@ -37,6 +38,7 @@ export class Uploader {
     this.hasUpload = true;
     this.lastPercentage = 0;
     this.lastNBytes = 0;
+    this.currentErrorMessagePriority = -1;
 
     this.lastProgressTimeMillis = Date.now();
     this.progressElement.style.visibility = 'visible';
@@ -44,10 +46,10 @@ export class Uploader {
     this.xhr = new XMLHttpRequest();
     this.xhr.open(this.formElement.method, this.formElement.action);
     this.xhr.upload.onprogress = (e) => this._reportProgress(e);
-    this.xhr.upload.onerror = () => this._stopUpload('Upload error');
-    this.xhr.upload.onabort = () => this._stopUpload('Upload abort');
+    this.xhr.upload.onerror = () => this._stopUpload('Upload error', 0);
+    this.xhr.upload.onabort = () => this._stopUpload('Upload abort', 0);
     this.xhr.upload.ontimeout =
-      () => this._stopUpload('Upload timeout (try again)');
+      () => this._stopUpload('Upload timed out (try again)', 2);
     this.xhr.upload.onloadend =
       () => console.log('xhr.upload.onloadend was called');
     
@@ -59,9 +61,13 @@ export class Uploader {
     event.preventDefault();
   };
 
-  _stopUpload = (message: string): void => {
-    console.log('_stopUpload is called');
-    this._setUploadStatus(message);
+  _stopUpload = (message: string, messagePriority: number): void => {
+    console.log(`_stopUpload is called [${message}]`);
+
+    if (messagePriority > this.currentErrorMessagePriority) {
+      this._setUploadStatus(message);
+      this.currentErrorMessagePriority = messagePriority;
+    }
 
     console.assert(this.hasUpload);
 
@@ -82,7 +88,7 @@ export class Uploader {
         `Connection interrupted... [${Math.round(secondsWithoutProgress)}s]`);
     }
     if (secondsWithoutProgress >= 60) {
-      this._stopUpload('Upload failed.');
+      this._stopUpload('Connection timeout - Upload failed.', 2);
     }
   };
 
@@ -91,10 +97,10 @@ export class Uploader {
     if (this.xhr == null) return;
     if (this.xhr.readyState === XMLHttpRequest.DONE) {
       if (this.xhr.status === 200) {
-        this._stopUpload('Upload successful!');
+        this._stopUpload('Upload successful!', 2);
       } else {
         this._stopUpload(
-          `Upload error [${this.xhr.status}]: ${this.xhr.responseText}`);
+          `Upload error [${this.xhr.status}]: ${this.xhr.responseText}`, 1);
       }
     }
     console.log(
@@ -115,7 +121,7 @@ export class Uploader {
       this.uploadStatus.printProgressIfChanged(e.loaded, e.total);
       percentage = e.loaded / e.total * 100;
       if (e.total > Common.maxFileSize) {
-        this._stopUpload('File too large!');
+        this._stopUpload('File too large!', 2);
         return;
       }
     }
