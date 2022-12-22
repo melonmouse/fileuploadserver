@@ -40,7 +40,7 @@ const dirname = () => {
 app.use('/static', express.static(path.join(dirname(),'fileuploadserver')));
 
 app.get('/', (req:Request, res:Response) => {
-  res.sendFile(path.join(dirname(), 'fileuploadserver/upload_module.html'));
+  res.sendFile(path.join(dirname(), 'fileuploadserver/client.html'));
 });
 
 app.listen(argv.port, argv.ip, () => {

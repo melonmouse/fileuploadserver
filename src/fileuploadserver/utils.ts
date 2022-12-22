@@ -8,4 +8,21 @@ export class Utils {
       `Child with classname=[${className}] is not unique.}`);
     return elements[0] as HTMLElement;
   }
+
+  static loadHtml = (url: string, element: HTMLElement): Promise<void> => {
+    return new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      xhr.open('GET', url);
+      xhr.onload = () => {
+        if (xhr.status == 200) {
+          element.innerHTML = xhr.responseText;
+          resolve();
+        } else {
+          console.error(`Failed to load HTML from [${url}].`);
+          reject(xhr.status);
+        }
+      };
+      xhr.send();
+    });
+  }
 }

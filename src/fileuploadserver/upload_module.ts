@@ -1,9 +1,9 @@
 import { Uploader } from './upload_class';
 import { Utils } from './utils';
 
-const createUploadForm = (uploadModuleElementId:string): void => {
-  const uploadModuleElement =
-    document.getElementById(uploadModuleElementId) as HTMLElement;
+const createUploadForm = async (uploadModuleElement:HTMLElement): Promise<void> => {
+  console.log(`Fetching upload form [${uploadModuleElement.id}].`);
+  await Utils.loadHtml('./static/upload_module.html', uploadModuleElement);
   const formElement = Utils.getUniqueChildByClassName(
     uploadModuleElement, 'uploadForm') as HTMLFormElement;
   const progressElement =
@@ -18,8 +18,8 @@ const createUploadForm = (uploadModuleElementId:string): void => {
   formElement.addEventListener('submit', submitUploadForm);
 
   // Expose uploaders to the global scope for debugging.
-  console.log(`Upload form [${uploadModuleElementId}] loaded.`);
-  window.uploadModule[uploadModuleElementId] = submitUploadForm;
+  console.log(`Upload form [${uploadModuleElement.id}] is ready.`);
+  window.uploadModule[uploadModuleElement.id] = submitUploadForm;
 };
 
 declare global {
@@ -27,4 +27,6 @@ declare global {
 }
 window.uploadModule = {};
 
-createUploadForm('myUploadForm');
+for (const uploadModuleElement of document.getElementsByClassName('uploadWidget')) {
+  createUploadForm(uploadModuleElement as HTMLElement);
+}
