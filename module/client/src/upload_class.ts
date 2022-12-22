@@ -1,9 +1,8 @@
 import * as Common from '../../common/src/common.js';
 import { Utils } from './utils';
 
-// TODO check + report if connection is silently lost
-// TODO add connection indicator (e.g. circle that rotates when uploading)
 // TODO add tests
+// TODO reconnect and continue on connection lost
 
 export class Uploader {
   formElement:HTMLFormElement;
@@ -20,7 +19,7 @@ export class Uploader {
   hasUpload = false;
   currentErrorMessagePriority:number;
 
-  uploadStatus = new Common.UploadStatus();
+  uploadStatus : Common.UploadStatus;
   xhr:XMLHttpRequest|null = null;
 
   constructor(formElement:HTMLFormElement, progressElement:HTMLElement) {
@@ -34,7 +33,8 @@ export class Uploader {
 
   submitUpload = (event: SubmitEvent): void => {
     console.assert(!this.hasUpload);
-
+    
+    this.uploadStatus = new Common.UploadStatus();
     this.hasUpload = true;
     this.lastPercentage = 0;
     this.lastNBytes = 0;
@@ -63,13 +63,12 @@ export class Uploader {
 
   _stopUpload = (message: string, messagePriority: number): void => {
     console.log(`_stopUpload is called [${message}]`);
+    // Note: can be called multiple times.
 
     if (messagePriority > this.currentErrorMessagePriority) {
       this._setUploadStatus(message);
       this.currentErrorMessagePriority = messagePriority;
     }
-
-    console.assert(this.hasUpload);
 
     if (this.xhr != null) {
       this.xhr.abort();
@@ -88,7 +87,7 @@ export class Uploader {
         `Connection interrupted... [${Math.round(secondsWithoutProgress)}s]`);
     }
     if (secondsWithoutProgress >= 60) {
-      this._stopUpload('Connection timeout - Upload failed.', 2);
+      this._stopUpload('Upload failed - timed out.', 2);
     }
   };
 

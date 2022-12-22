@@ -19,6 +19,11 @@ export class UploadStatus {
       receivedInUnit > this.lastReceivedInUnit) {
       this.lastReceivedInUnit = receivedInUnit;
       const expectedInUnit = Math.round(bytesExpected / unitSize * 10) / 10;
+      if (`${receivedInUnit.toFixed(1)}` == `${expectedInUnit.toFixed(1)}`) {
+        // Do not report progress if it is 100% to discourage users from closing
+        // the page too early.
+        return this.lastProgressString;
+      }
       this.lastProgressString =
         `${receivedInUnit.toFixed(1)} / ${expectedInUnit.toFixed(1)} ${unitName}`;
     }
