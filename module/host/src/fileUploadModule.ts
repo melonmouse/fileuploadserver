@@ -13,7 +13,7 @@ export class FileUploadModule {
     this.uploadDir = uploadDir;
   }
  
-  doUpload = (req: Request, res: Response, next: NextFunction) => {
+  doUpload = (req: Request, res: Response, _next: NextFunction) => {
     const date = new Date();
     const hexIdLength = 4;
     const randomHexString = Math.floor(Math.random() * 16 ** hexIdLength).toString(16).padStart(hexIdLength, '0');
@@ -54,12 +54,12 @@ export class FileUploadModule {
     form.on('end', () => printToConsole('Uploads complete.'));
 
     form.parse(req, (err, fields:formidable.Fields, files:formidable.Files) => {
-      printToConsole(`Parsing form.`);
+      printToConsole('Parsing form.');
       if (err) {
         printToConsole(`An error occured: [${err}]`);
         return;
       }
-      printToConsole(`Returning json.`);
+      printToConsole('Returning json.');
       res.json({ fields, files });
     });
   };

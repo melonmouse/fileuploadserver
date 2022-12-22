@@ -100,7 +100,7 @@ export class Uploader {
       } else {
         let message = `Upload error [${ this.xhr.status }]`;
         if (this.xhr.responseText.length > 0) {
-          message += `: [${this.xhr.responseText}]`
+          message += `: [${this.xhr.responseText}]`;
         }
         this._stopUpload(message, 1);
       }
