@@ -7,6 +7,8 @@ if which shellcheck > /dev/null; then
     shellcheck compile_host.sh
 fi
 
+ls node_modules > /dev/null || (echo "Installing NPM packages" && npm ci)
+
 echo "Linting... (server)"
 npx eslint src/*.ts
 

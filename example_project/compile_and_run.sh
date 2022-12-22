@@ -7,6 +7,8 @@ if which shellcheck > /dev/null; then
     shellcheck compile_and_run.sh
 fi
 
+ls node_modules > /dev/null || (echo "Installing NPM packages" && npm ci)
+
 echo "Linting... (example_project)"
 npx eslint src/*.ts
 
@@ -18,7 +20,8 @@ mkdir -p uploads
 
 echo "Running..."
 if which ufw &> /dev/null; then
-    PORT=$(( 1024 + RANDOM % 49152 ))
+    #PORT=$(( 1024 + RANDOM % (49152 - 1024) ))
+    PORT=21096
     echo "Opening port [${PORT}]..."
     sudo ufw allow "${PORT}/tcp"
     echo "====== Ports open for TCP ======"
